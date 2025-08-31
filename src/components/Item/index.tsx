@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { Trash2 } from "lucide-react-native";
 
 import { styles } from "./styles";
@@ -12,16 +12,24 @@ type ItemData = {
 
 type Props = {
     data: ItemData
+    onRemove: () => void
+    onStatus: () => void
 }
 
-export function Item({data}: Props){
+export function Item({ data, onStatus, onRemove }: Props){
     return (
         <View style={styles.container}>
-            <TouchableOpacity activeOpacity={0.8}>
+            <Pressable onPress={onStatus}>
                 <StatusIcon status={data.status}>
-
                 </StatusIcon>
-            </TouchableOpacity>
+            </Pressable>
+
+            <Text style={styles.description}>
+                {data.description}
+            </Text>
+            <Pressable onPress={onRemove}>
+                <Trash2 size={18} color="#828282"/>
+            </Pressable>
         </View>
     )
 }

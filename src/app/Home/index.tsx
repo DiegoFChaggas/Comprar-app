@@ -1,14 +1,21 @@
 import { StatusBar } from 'expo-status-bar';
-import {Text, View, Image, TouchableOpacity } from 'react-native';
+import {Text, View, Image, TouchableOpacity, Pressable, FlatList } from 'react-native';
 
 import { Button } from '@/components/Botton';
 import { Input } from '@/components/Input';
 import { Filter } from '@/components/Filter';
+import { Item } from '@/components/Item';
 
 import { styles } from './styles';
 import { FilterStatus } from '@/types/FilterStatus';
 
 const FILTER_STATUS: FilterStatus[] = [FilterStatus.PENDING, FilterStatus.DONE]
+
+const ITEMS = [
+  {id: "1", status: FilterStatus.DONE, description: "1 pacote de café"},
+  {id: "2", status: FilterStatus.PENDING, description: "3 pacotes de macarrão"},
+  {id: "3", status: FilterStatus.DONE, description: "3 cebolas"}
+]
 
 export function Home() {
   return (
@@ -27,10 +34,21 @@ export function Home() {
             <Filter key={status} status={status} isActive></Filter>
           ))
         }
-        <TouchableOpacity style={styles.clearButton}>
+        <Pressable style={styles.clearButton}>
           <Text style={styles.clearText}>Limpar</Text>
-        </TouchableOpacity>
+        </Pressable>
         </View>
+        <FlatList
+        data={ITEMS}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item })=>(
+          <Item 
+          data={ {status: FilterStatus.DONE, description: "Cafe"}}
+          onRemove={() => console.log("remover") }
+          onStatus={() => console.log("trocar status")}
+        />)}
+        />
+        
       </View>
     </View>
   );
