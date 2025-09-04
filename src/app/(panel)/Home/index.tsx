@@ -6,7 +6,7 @@ import { Input } from '@/components/Input';
 import { Filter } from '@/components/Filter';
 import { Item } from '@/components/Item';
 
-import { styles } from './styles';
+import { styles } from './_styles';
 import { FilterStatus } from '@/types/FilterStatus';
 
 const FILTER_STATUS: FilterStatus[] = [FilterStatus.PENDING, FilterStatus.DONE]
@@ -17,7 +17,7 @@ const ITEMS = [
   {id: "3", status: FilterStatus.DONE, description: "3 cebolas"}
 ]
 
-export function Home() {
+export default function Home() {
   return (
     <View style={styles.container}>
       <Image source={require("@/assets/logo.png")} style={styles.logo}></Image>
