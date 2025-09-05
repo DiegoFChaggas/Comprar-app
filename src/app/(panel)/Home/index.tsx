@@ -1,12 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
-import {Text, View, Image, TouchableOpacity, Pressable, FlatList } from 'react-native';
+import {Text, View, Image, Pressable, FlatList } from 'react-native';
 
-import { Button } from '@/components/Botton';
+import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { Filter } from '@/components/Filter';
 import { Item } from '@/components/Item';
 
-import { styles } from './_styles';
+import { styles } from './styles';
 import { FilterStatus } from '@/types/FilterStatus';
 
 const FILTER_STATUS: FilterStatus[] = [FilterStatus.PENDING, FilterStatus.DONE]
