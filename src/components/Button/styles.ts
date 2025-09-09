@@ -13,5 +13,10 @@ export const styles = StyleSheet.create({
         color:"#FFFFFF",
         fontSize: 14,
         fontWeight: 600,
-    }
+    },
+    pressed: {
+    opacity: 0.7,
+    transform: [{ scale: 0.98 }]
+}
+
 })

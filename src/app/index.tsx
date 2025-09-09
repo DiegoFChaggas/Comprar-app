@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image } from "react-native";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { useState } from "react";
 
 import colors from "@/colors";
@@ -15,7 +15,7 @@ export default function Login(){
     const [loading, setLoading] = useState(false);
 
     function handleSignIn(){
-
+        router.replace('./(panel)/Home')
     }
 
     return(

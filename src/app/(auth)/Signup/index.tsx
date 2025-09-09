@@ -1,10 +1,11 @@
-import { View, Text, StyleSheet, Image, SafeAreaView, ScrollView } from "react-native";
-import { Link } from "expo-router";
+import { View, Text, StyleSheet, Image, SafeAreaView, ScrollView, Alert, Pressable } from "react-native";
+import { Link, router } from "expo-router";
 import { useState } from "react";
 
 import colors from "@/colors";
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
+import { supabase } from "@/lib/supabase";
 
 export default function SignupPage(){
  
@@ -14,8 +15,25 @@ export default function SignupPage(){
     const [loading, setLoading] = useState(false)
 
 
-    function handleSignUp(){
-
+    async function handleSignUp(){
+        
+         setLoading(true);
+         const { data, error } = await supabase.auth.signUp({
+             email: email,
+             password: password,
+             options:{
+                data:{
+                    name: name
+                }
+             }
+         })
+         if(error){
+             Alert.alert('Error', error.message);
+             setLoading(false);
+             return;
+        }
+         setLoading(false);
+         router.replace('/')
     }
 
     return(
@@ -63,7 +81,11 @@ export default function SignupPage(){
                             onChangeText={setPassword}
                         />
                     </View>
-    
+
+                    {/* <Pressable onPress={handleSignUp}>
+                        <Text> Cadastrar </Text>
+                    </Pressable> */}
+
                     <View style={ styles.buttonForm }>
                         <Button
                             title="Cadastrar"
