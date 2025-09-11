@@ -2,9 +2,11 @@ import { View, Text, StyleSheet, Image } from "react-native";
 import { Link, router } from "expo-router";
 import { useState } from "react";
 
+
 import colors from "@/colors";
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
+import { supabase } from "@/lib/supabase";
 
 
 
@@ -14,8 +16,11 @@ export default function Login(){
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
 
-    function handleSignIn(){
-        router.replace('./(panel)/Home')
+    async function handleSignIn(){
+        setLoading(true);
+
+        const {} = await supabase.auth;
+
     }
 
     return(

@@ -88,7 +88,7 @@ export default function SignupPage(){
 
                     <View style={ styles.buttonForm }>
                         <Button
-                            title="Cadastrar"
+                            title={ loading ? "Carregando..." : "Cadastrar" }
                             onPress={handleSignUp}
                         />
                     </View>
