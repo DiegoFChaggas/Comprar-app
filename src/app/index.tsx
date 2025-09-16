@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, Alert } from "react-native";
 import { Link, router } from "expo-router";
 import { useState } from "react";
 
@@ -19,8 +19,19 @@ export default function Login(){
     async function handleSignIn(){
         setLoading(true);
 
-        const {} = await supabase.auth;
+        const {data, error} = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        })
 
+        if(error){
+            Alert.alert('Error', error.message);
+            setLoading(false);
+            return;
+        }
+
+        setLoading(false);
+        router.replace('Home')
     }
 
     return(
@@ -57,7 +68,7 @@ export default function Login(){
 
                 <View style={ styles.buttonForm }>
                     <Button
-                        title="Entrar"
+                        title={ loading ? "Carregando..." : "Entrar" }
                         onPress={handleSignIn}
                     />
                 </View>
