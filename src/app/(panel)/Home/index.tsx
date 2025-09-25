@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import {Text, View, Image, Pressable, FlatList } from 'react-native';
+import {Text, View, Image, Pressable, FlatList, Alert } from 'react-native';
 
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
@@ -8,6 +8,8 @@ import { Item } from '@/components/Item';
 
 import { styles } from './styles';
 import { FilterStatus } from '@/types/FilterStatus';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/app/contexts/AuthContexts';
 
 const FILTER_STATUS: FilterStatus[] = [FilterStatus.PENDING, FilterStatus.DONE]
 
@@ -17,7 +19,22 @@ const ITEMS = [
   {id: "3", status: FilterStatus.DONE, description: "3 cebolas"}
 ]
 
+
+
+
 export default function Home() {
+  const { setAuth } = useAuth();
+  setAuth(null);
+  
+  async function handleSignout() {
+    const { error } = await supabase.auth.signOut();
+
+    if(error){
+      Alert.alert('error' , 'Erro ao sair da conta, tente novamente mais tarde.');
+      return;
+    }
+  }
+
   return (
     <View style={styles.container}>
       <Image source={require("@/assets/logo.png")} style={styles.logo}></Image>
