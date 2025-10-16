@@ -1,4 +1,6 @@
-import { View, Text, StyleSheet, Image, SafeAreaView, ScrollView, Alert, Pressable } from "react-native";
+import { View, Text, StyleSheet, Image, ScrollView, Alert, Pressable } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 import { Link, router } from "expo-router";
 import { useState } from "react";
 
@@ -33,7 +35,8 @@ export default function SignupPage(){
              return;
         }
          setLoading(false);
-         router.replace('/')
+         Alert.alert('Cadastrado com Sucesso!');
+        router.replace('../Signin');
     }
 
     return(
@@ -93,7 +96,7 @@ export default function SignupPage(){
                         />
                     </View>
     
-                    <Link href={"../"}>
+                    <Link href={"../Signin"}>
                         <Text>Já possui uma conta? Faça o login</Text>
                     </Link>
                 </View>

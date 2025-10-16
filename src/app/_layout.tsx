@@ -1,7 +1,7 @@
 import { router, Stack } from "expo-router";
 import { useEffect } from 'react';
 
-import { AuthProvider, useAuth } from '@/app/contexts/AuthContexts';
+import { AuthProvider, useAuth } from '@/contexts/AuthContexts';
 import { supabase } from '@/lib/supabase';
 
 
@@ -23,21 +23,20 @@ function MainLayout() {
         
         if(session){
           setAuth(session.user);
-          router.replace("home");
+          router.replace('/(panel)/Home');
           return
         }
 
         setAuth(null);
-        router.replace("/")
-      })
+        router.replace('/(auth)/Signin')
+      }) 
     },[])
-  
-    useEffect
-  
-
   return (
     <Stack>
       <Stack.Screen name="index" 
+      options={{ headerShown: false }} />
+
+      <Stack.Screen name="(auth)/Signin/index" 
       options={{ headerShown: false }} />
 
       <Stack.Screen name="(auth)/Signup/index" 

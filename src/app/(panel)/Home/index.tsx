@@ -6,10 +6,10 @@ import { Input } from '@/components/Input';
 import { Filter } from '@/components/Filter';
 import { Item } from '@/components/Item';
 
-import { styles } from './styles';
+import { styles } from '../../../styles/home/styles';
 import { FilterStatus } from '@/types/FilterStatus';
 import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/app/contexts/AuthContexts';
+import { useAuth } from '@/contexts/AuthContexts';
 
 const FILTER_STATUS: FilterStatus[] = [FilterStatus.PENDING, FilterStatus.DONE]
 
@@ -24,7 +24,6 @@ const ITEMS = [
 
 export default function Home() {
   const { setAuth } = useAuth();
-  setAuth(null);
   
   async function handleSignout() {
     const { error } = await supabase.auth.signOut();
@@ -33,12 +32,15 @@ export default function Home() {
       Alert.alert('error' , 'Erro ao sair da conta, tente novamente mais tarde.');
       return;
     }
+    setAuth(null);
   }
 
   return (
     <View style={styles.container}>
       <Image source={require("@/assets/logo.png")} style={styles.logo}></Image>
-
+      <Button title='Sair'
+              onPress={handleSignout}
+      />
       <View style={styles.form}>
         <Input placeholder='O que você precisa comprar?'/>
         <Button title='Adicionar'/>
