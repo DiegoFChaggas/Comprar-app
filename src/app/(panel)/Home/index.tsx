@@ -53,18 +53,19 @@ export default function Home() {
             <Filter key={status} status={status} isActive></Filter>
           ))
         }
-        <Pressable style={styles.clearButton}>
-          <Text style={styles.clearText}>Limpar</Text>
-        </Pressable>
+
+          <Pressable style={styles.clearButton}>
+            <Text style={styles.clearText}>Limpar</Text>
+          </Pressable>
         </View>
         <FlatList
         data={ITEMS}
         keyExtractor={(item) => item.id}
-        renderItem={({ item })=>(
+        renderItem={({ item }) => (
           <Item 
-          data={ {status: FilterStatus.DONE, description: "Cafe"}}
-          onRemove={() => console.log("remover") }
-          onStatus={() => console.log("trocar status")}
+           data={ item }
+           onRemove={() => console.log("remover") }
+           onStatus={() => console.log("trocar status")}
         />)}
         />
         
