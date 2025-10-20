@@ -1,5 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
-import {Text, View, Image, Pressable, FlatList, Alert } from 'react-native';
+import { Text, View, Image, Pressable, FlatList, Alert } from 'react-native';
+import { useState } from 'react';
 
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
@@ -35,6 +36,14 @@ export default function Home() {
     setAuth(null);
   }
 
+  //Configurações do Filtro
+  const [filter, setFilter] = useState(FilterStatus.PENDING)
+
+  function update(value: FilterStatus){
+    setFilter(value)
+  }
+
+
   return (
     <View style={styles.container}>
       <Image source={require("@/assets/logo.png")} style={styles.logo}></Image>
@@ -50,7 +59,12 @@ export default function Home() {
         <View style={styles.header}>
         {
           FILTER_STATUS.map((status) => (
-            <Filter key={status} status={status} isActive></Filter>
+            <Filter 
+            key={status} 
+            status={status} 
+            isActive= {status === filter}
+            onPress={() => setFilter(status)}
+            />
           ))
         }
 
