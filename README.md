@@ -38,20 +38,34 @@ O projeto utiliza a estrutura de navegação baseada em arquivos do **Expo Route
 
 app/
 ├── (auth)/
+
 │   ├── Signin/index.tsx
+
 │   └── Signup/index.tsx
+
 │
+
 ├── (panel)/
+
 │   └── Home/index.tsx
+
 │
+
 ├── _layout.tsx
+
 │
+
 │
+
 └── index.tsx
 
+
 components/
+
 lib/
+
 storage/ 
+
 contexts/ 
 
 
@@ -97,3 +111,4 @@ Antes de rodar o projeto, você precisa configurar o Supabase.
         ```
 
         *(ou `expo start --web`)*
+
