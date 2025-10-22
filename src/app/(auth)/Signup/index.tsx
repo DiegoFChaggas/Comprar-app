@@ -4,9 +4,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, router } from "expo-router";
 import { useState } from "react";
 
-import colors from "@/colors";
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
+import { styles } from '@/styles/auth/signup/styles';
 import { supabase } from "@/lib/supabase";
 
 export default function SignupPage(){
@@ -106,43 +106,3 @@ export default function SignupPage(){
         )
     }
     
-    const styles = StyleSheet.create({
-        container: {
-            flex: 1,
-            justifyContent:"center",
-            alignItems:"center",
-            flexDirection: "column",
-            paddingTop: 34,
-            backgroundColor: colors.grey
-        },
-        header: {
-            flexDirection: "column"
-        },
-        slogan: {
-            fontSize: 18,
-            fontWeight: "bold",
-            marginBottom: 34,
-        },
-        form:{
-            width:"75%",
-            height: "45%"
-            
-        },
-        inputForm:{
-            flex: 1,
-            marginVertical:10,
-            flexDirection:"column"
-        },
-        label:{
-            color: colors.blue,
-            fontSize: 18,
-            fontWeight: "600"
-        },
-        buttonForm:{
-            marginTop:20,
-        },
-        link:{
-            marginTop:5,
-            textAlign:"center",
-        }
-    })

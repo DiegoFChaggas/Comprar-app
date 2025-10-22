@@ -3,7 +3,7 @@ import { Link, router } from "expo-router";
 import { useState } from "react";
 
 
-import { styles } from '@/styles/auth/styles'
+import { styles } from '@/styles/auth/signin/styles'
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { supabase } from "@/lib/supabase";
