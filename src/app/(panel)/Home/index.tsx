@@ -36,9 +36,9 @@ export default function Home() {
     setAuth(null);
   }
 
-  function update(value: FilterStatus){
+  /*function update(value: FilterStatus){
     setFilter(value)
-  }
+  }*/
 
   async function handleAdd(){
     if(!description.trim()){
