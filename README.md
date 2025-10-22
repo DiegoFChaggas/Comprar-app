@@ -81,7 +81,7 @@ Antes de rodar o projeto, você precisa configurar o Supabase.
 
 1.  **Clone o repositório:**
     ```bash
-    git clone [URL_DO_SEU_REPOSITORIO]
+    git clone https://github.com/DiegoFChaggas/Comprar-app
     cd comprar
     ```
 
@@ -111,4 +111,5 @@ Antes de rodar o projeto, você precisa configurar o Supabase.
         ```
 
         *(ou `expo start --web`)*
+
 
