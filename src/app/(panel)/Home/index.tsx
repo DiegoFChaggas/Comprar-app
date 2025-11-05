@@ -41,75 +41,81 @@ export default function Home() {
   }*/
 
   async function handleAdd(){
-    if(!description.trim()){
-      return Alert.alert("Adicionar", "Informe a descrição para adicionar")
-    }
-    const newItem = {
-      id: Math.random().toString(36).substring(2),
-      description,
-      status: FilterStatus.PENDING,
-    }
-
-    await itemsStorage.add(newItem);
-    await itemsByStatus();  
-
-    Alert.alert("Adicionado", `Adicionado ${description}`);
-    setFilter(FilterStatus.PENDING);
-
-    setDescription("");
     
+if (!description.trim()) {
+      return Alert.alert('Adicionar', 'Informe a descrição para adicionar');
+    }
+
+    try {
+      // Agora o add só precisa da descrição; status padrão é PENDING
+      await itemsStorage.add({ description });
+
+      // Recarrega conforme o filtro atual
+      await itemsByStatus();
+
+      Alert.alert('Adicionado', `Adicionado: ${description}`);
+      setFilter(FilterStatus.PENDING); // opcional: força voltar para pendentes
+      setDescription('');
+    } catch (e: any) {
+      console.log(e);
+      Alert.alert('Erro', e?.message ?? 'Não foi possível adicionar o item.');
+    }
+
   }
+
 
   async function itemsByStatus() {
     try {
-      const response = await itemsStorage.getByStatus(filter)
-      setItems(response)
+      const response = await itemsStorage.getByStatus(filter);
+      setItems(response);
     } catch (error) {
-      console.log(error)
-      Alert.alert("Erro", "Não foi possível filtrar os itens.")
+      console.log(error);
+      Alert.alert('Erro', 'Não foi possível filtrar os itens.');
     }
   }
 
-  async function handelRemove(id:string) {
+  async function handleRemove(id: string) {
     try {
       await itemsStorage.remove(id);
       await itemsByStatus();
     } catch (error) {
-      Alert.alert("Remover", "Não foi possível remover")
+      console.log(error);
+      Alert.alert('Remover', 'Não foi possível remover');
     }
   }
 
-  function handleClear(){
-    Alert.alert("Limpar", "Deseja remover todos?", [
-      { text: "Não", style: "cancel" },
-      { text: "Sim", onPress: () => onClear() }
-    ])
+  function handleClear() {
+    Alert.alert('Limpar', 'Deseja remover todos?', [
+      { text: 'Não', style: 'cancel' },
+      { text: 'Sim', onPress: () => onClear() },
+    ]);
   }
 
   async function onClear() {
     try {
-      await itemsStorage.clear()
-      setItems([])
+      await itemsStorage.clear();
+      setItems([]);
     } catch (error) {
-      console.log(error)
-      Alert.alert("Erro", 'Não foi possível remover todos os itens.')
+      console.log(error);
+      Alert.alert('Erro', 'Não foi possível remover todos os itens.');
     }
   }
 
-  async function handleToggleItemStatus(id:string){
+  async function handleToggleItemStatus(id: string) {
     try {
-      await itemsStorage.toggleStatus(id)
-      await itemsByStatus()
+      await itemsStorage.toggleStatus(id);
+      await itemsByStatus();
     } catch (error) {
-      console.log(error)
-      Alert.alert("Erro", "Não foi possível atualizar o status.")
+      console.log(error);
+      Alert.alert('Erro', 'Não foi possível atualizar o status.');
     }
   }
 
-useEffect(() => {
-  itemsByStatus()
-}
-,[filter])  
+  // Carrega quando o filtro muda
+  useEffect(() => {
+    itemsByStatus();
+  }, [filter]);
+
 
 
   return (
@@ -131,30 +137,38 @@ useEffect(() => {
         <View style={styles.header}>
         {
           FILTER_STATUS.map((status) => (
-            <Filter 
-            key={status} 
-            status={status} 
-            isActive= {status === filter}
-            onPress={() => setFilter(status)}
+            <Filter
+              key={status}
+              status={status}
+              isActive={status === filter}
+              onPress={() => setFilter(status)}
             />
           ))
         }
+
 
           <Pressable style={styles.clearButton} onPress={handleClear}>
             <Text style={styles.clearText}>Limpar</Text>
           </Pressable>
         </View>
-        <FlatList
-        data={items}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <Item 
-           data={ item }
-           onRemove={() => handelRemove(item.id)}
-           onStatus={() => handleToggleItemStatus(item.id)}
-        />)}
-        />
         
+        <FlatList
+          data={items}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <Item
+              data={item}
+              onRemove={() => handleRemove(item.id)}
+              onStatus={() => handleToggleItemStatus(item.id)}
+            />
+          )}
+          ListEmptyComponent={
+            <Text style={{ textAlign: 'center', opacity: 0.6, marginTop: 24 }}>
+              Nenhum item {filter === FilterStatus.PENDING ? 'pendente' : 'concluído'}.
+            </Text>
+          }
+          contentContainerStyle={{ paddingBottom: 32 }}
+        />        
       </View>
     </View>
   );

@@ -1,33 +1,36 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FilterStatus } from "@/types/FilterStatus";
 import { supabase } from "@/lib/supabase";
 
-const ITEMS_STORAGE_KEY = "@comprar:items"
+export type ItemStorage = {
+  id: string; 
+  description: string;
+  status: FilterStatus;      // 'PENDING' | 'DONE'
+  user_id: string;
+  created_at?: string;
+};
 
-export type ItemStorage ={
-    id: string,
-    status: FilterStatus,
-    description: string,
-    user_id?: string
-}
-
+export type NewItemInput = {
+  description: string;
+  status?: FilterStatus;     // default: 'PENDING'
+};
 
 async function getCurrentUserId(): Promise<string> {
   const { data, error } = await supabase.auth.getUser();
-  if (error || !data?.user) {
-    throw new Error("Não foi possível obter o usuário autenticado.");
+  if (error) {
+    throw new Error("GET_CURRENT_USER_ID: " + error.message);
+  }
+  if (!data?.user) {
+    throw new Error("GET_CURRENT_USER_ID: Usuário não autenticado.");
   }
   return data.user.id;
-};
-
-
+}
 
 async function get(): Promise<ItemStorage[]> {
   const userId = await getCurrentUserId();
 
   const { data, error } = await supabase
     .from("items")
-    .select("id, description, status, user_id")
+    .select("id, description, status, user_id, created_at")
     .eq("user_id", userId)
     .order("created_at", { ascending: true });
 
@@ -38,14 +41,12 @@ async function get(): Promise<ItemStorage[]> {
   return (data ?? []) as ItemStorage[];
 }
 
-
-
 async function getByStatus(status: FilterStatus): Promise<ItemStorage[]> {
   const userId = await getCurrentUserId();
 
   const { data, error } = await supabase
     .from("items")
-    .select("id, description, status, user_id")
+    .select("id, description, status, user_id, created_at")
     .eq("user_id", userId)
     .eq("status", status)
     .order("created_at", { ascending: true });
@@ -57,60 +58,98 @@ async function getByStatus(status: FilterStatus): Promise<ItemStorage[]> {
   return (data ?? []) as ItemStorage[];
 }
 
-async function save(items:ItemStorage[]): Promise<void> {
-    const { data, error } = await supabase
-    .from('items')
-    .insert(items);
+async function add(newItem: NewItemInput): Promise<ItemStorage> {
+  const userId = await getCurrentUserId();
+
+  const payload = {
+    description: newItem.description,
+    status: newItem.status ?? ("PENDING" as FilterStatus),
+    user_id: userId,
+  };
+
+  const { data, error } = await supabase
+    .from("items")
+    .insert(payload)
+    .select("id, description, status, user_id, created_at")
+    .single();
+
+  if (error) {
+    throw new Error("ITEMS_ADD: " + error.message);
+  }
+
+  return data as ItemStorage;
 }
 
-async function add(newItem: ItemStorage): Promise<ItemStorage[]> {
-    const items = await get()
-    const updatedItems = [...items, newItem]
+async function remove(id: string): Promise<void> {
+  const userId = await getCurrentUserId();
 
-    await save(updatedItems)
+  const { error } = await supabase
+    .from("items")
+    .delete()
+    .eq("id", id)
+    .eq("user_id", userId); // proteção extra mesmo com RLS
 
-    return updatedItems
+  if (error) {
+    throw new Error("ITEMS_REMOVE: " + error.message);
+  }
 }
 
-async function remove(id:string): Promise<void> {
-    const items = await get()
-    const updatedItems = items.filter((item)=> item.id !== id)
-    await save(updatedItems)
+async function clear(): Promise<void> {
+  const userId = await getCurrentUserId();
+
+  const { error } = await supabase
+    .from("items")
+    .delete()
+    .eq("user_id", userId);
+
+  if (error) {
+    throw new Error("ITEMS_CLEAR: " + error.message);
+  }
 }
 
-async function  clear(): Promise<void> {
-    try {
-        await AsyncStorage.removeItem(ITEMS_STORAGE_KEY)
-    } catch (error) {
-        throw new Error("ITEMS_CLEAR: " + error)
-    }
-    
-}
+async function toggleStatus(id: string): Promise<ItemStorage> {
+  const userId = await getCurrentUserId();
 
-async function toggleStatus(id: string): Promise<void>{
-    const items = await get()
+  // 1) Buscar status atual (apenas o necessário)
+  const { data: existing, error: getErr } = await supabase
+    .from("items")
+    .select("id, status")
+    .eq("id", id)
+    .eq("user_id", userId)
+    .single();
 
-    const updatedItems = items.map((item) => 
-        item.id === id 
-    ? {
-        ...item,
-        status: 
-            item.status === FilterStatus.PENDING
-                ? FilterStatus.DONE
-                : FilterStatus.PENDING
+  if (getErr || !existing) {
+    throw new Error(
+      "ITEMS_TOGGLE_GET: " + (getErr?.message ?? "Item não encontrado para este usuário.")
+    );
+  }
 
-    }
-    : item
-    )
+  const nextStatus: FilterStatus =
+    existing.status === ("PENDING" as FilterStatus)
+      ? ("DONE" as FilterStatus)
+      : ("PENDING" as FilterStatus);
 
-    await save(updatedItems)
+  // 2) Atualizar e retornar o item completo
+  const { data, error } = await supabase
+    .from("items")
+    .update({ status: nextStatus })
+    .eq("id", id)
+    .eq("user_id", userId)
+    .select("id, description, status, user_id, created_at")
+    .single();
+
+  if (error) {
+    throw new Error("ITEMS_TOGGLE_UPDATE: " + error.message);
+  }
+
+  return data as ItemStorage;
 }
 
 export const itemsStorage = {
-    get,
-    getByStatus,
-    add,
-    remove,
-    clear,
-    toggleStatus
-}
+  get,
+  getByStatus,
+  add,
+  remove,
+  clear,
+  toggleStatus,
+};
