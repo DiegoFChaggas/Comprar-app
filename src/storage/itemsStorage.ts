@@ -11,7 +11,7 @@ export type ItemStorage = {
 
 export type NewItemInput = {
   description: string;
-  status?: FilterStatus;     // default: 'PENDING'
+  status?: FilterStatus;  
 };
 
 async function getCurrentUserId(): Promise<string> {
@@ -87,7 +87,7 @@ async function remove(id: string): Promise<void> {
     .from("items")
     .delete()
     .eq("id", id)
-    .eq("user_id", userId); // proteção extra mesmo com RLS
+    .eq("user_id", userId);
 
   if (error) {
     throw new Error("ITEMS_REMOVE: " + error.message);
@@ -129,7 +129,6 @@ async function toggleStatus(id: string): Promise<ItemStorage> {
       ? ("DONE" as FilterStatus)
       : ("PENDING" as FilterStatus);
 
-  // 2) Atualizar e retornar o item completo
   const { data, error } = await supabase
     .from("items")
     .update({ status: nextStatus })

@@ -42,7 +42,7 @@ function MainLayout() {
       <Stack.Screen name="(auth)/Signup/index" 
       options={{ headerShown: false }} />
 
-      <Stack.Screen name="(panel)/Home/index" 
+      <Stack.Screen name="(panel)" 
       options={{ headerShown: false }} />
     </Stack>
   );

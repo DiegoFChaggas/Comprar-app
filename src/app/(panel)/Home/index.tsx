@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import { Text, View, Image, Pressable, FlatList, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
 
@@ -47,14 +46,13 @@ if (!description.trim()) {
     }
 
     try {
-      // Agora o add só precisa da descrição; status padrão é PENDING
+
       await itemsStorage.add({ description });
 
-      // Recarrega conforme o filtro atual
       await itemsByStatus();
 
       Alert.alert('Adicionado', `Adicionado: ${description}`);
-      setFilter(FilterStatus.PENDING); // opcional: força voltar para pendentes
+      setFilter(FilterStatus.PENDING); 
       setDescription('');
     } catch (e: any) {
       console.log(e);
@@ -111,7 +109,6 @@ if (!description.trim()) {
     }
   }
 
-  // Carrega quando o filtro muda
   useEffect(() => {
     itemsByStatus();
   }, [filter]);
@@ -121,9 +118,11 @@ if (!description.trim()) {
   return (
     <View style={styles.container}>
       <Image source={require("@/assets/logo.png")} style={styles.logo}></Image>
-      <Button title='Sair'
+      <View>
+        <Button title='     Sair     '
               onPress={handleSignout}
-      />
+        />
+      </View>
       <View style={styles.form}>
         <Input 
         placeholder='O que você precisa comprar?'
